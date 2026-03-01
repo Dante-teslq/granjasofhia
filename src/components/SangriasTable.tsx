@@ -25,15 +25,15 @@ const SangriasTable = ({ items, onChange }: SangriasTableProps) => {
   const removeRow = (id: string) => onChange(items.filter((item) => item.id !== id));
 
   return (
-    <div className="glass-card rounded-xl overflow-hidden">
+    <div className="glass-card rounded-2xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-primary/10 text-foreground">
-              <th className="px-3 py-3 text-left font-semibold">Sangria</th>
-              <th className="px-3 py-3 text-left font-semibold">Cartelas Vazias</th>
-              <th className="px-3 py-3 text-left font-semibold">Barbantes</th>
-              <th className="px-3 py-3 text-left font-semibold">Campo de Notações</th>
+              <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Sangria</th>
+              <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Cartelas Vazias</th>
+              <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Barbantes</th>
+              <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Campo de Notações</th>
               <th className="px-3 py-3 w-10"></th>
             </tr>
           </thead>
@@ -41,8 +41,8 @@ const SangriasTable = ({ items, onChange }: SangriasTableProps) => {
             {items.map((item, idx) => (
               <tr
                 key={item.id}
-                className={`border-t border-border transition-colors hover:bg-muted/50 ${
-                  idx % 2 === 0 ? "" : "bg-muted/30"
+                className={`border-t border-border/50 transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
+                  idx % 2 === 0 ? "" : "bg-muted/10"
                 }`}
               >
                 <td className="px-2 py-1.5">
@@ -90,7 +90,7 @@ const SangriasTable = ({ items, onChange }: SangriasTableProps) => {
           </tbody>
         </table>
       </div>
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-border/50">
         <Button variant="outline" size="sm" onClick={addRow} className="gap-1.5">
           <Plus className="w-3.5 h-3.5" /> Adicionar Linha
         </Button>

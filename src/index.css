@@ -103,7 +103,7 @@
 
 @layer utilities {
   .glass-card {
-    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-2xl transition-all duration-300;
+    @apply bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-slate-700/50 rounded-2xl transition-all duration-300;
     box-shadow: 0 8px 30px rgb(0 0 0 / 0.04);
   }
 
@@ -112,7 +112,53 @@
   }
 
   .glass-card-interactive:hover {
-    box-shadow: 0 8px 30px rgb(0 0 0 / 0.08);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgb(0 0 0 / 0.08);
+    transform: translateY(-4px);
   }
+}
+
+/* Premium Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: rgba(156,163,175,0.4) transparent;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: rgba(156,163,175,0.4);
+}
+
+/* Text Selection */
+::selection {
+  background: hsl(40, 45%, 85%);
+  color: hsl(0, 0%, 15%);
+}
+
+/* CSS Animations */
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.animate-slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }

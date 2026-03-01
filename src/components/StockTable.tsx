@@ -48,22 +48,22 @@ const StockTable = ({ items, onChange }: StockTableProps) => {
   ];
 
   return (
-    <div className="glass-card rounded-lg overflow-hidden">
+    <div className="glass-card rounded-2xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-muted/50 text-foreground">
-              <th className="px-3 py-3 text-left font-semibold text-xs uppercase tracking-wider min-w-[200px]">Produto</th>
-              <th className="px-3 py-3 text-center font-semibold text-xs uppercase tracking-wider">Código</th>
+              <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground min-w-[200px]">Produto</th>
+              <th className="px-3 py-3 text-center font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Código</th>
               {numFields.map((f) => (
-                <th key={f.key} className="px-3 py-3 text-center font-semibold text-xs uppercase tracking-wider">
+                <th key={f.key} className="px-3 py-3 text-center font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
                   {f.label}
                 </th>
               ))}
-              <th className="px-3 py-3 text-center font-semibold text-xs uppercase tracking-wider">
+              <th className="px-3 py-3 text-center font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
                 Faltas
               </th>
-              <th className="px-3 py-3 text-left font-semibold text-xs uppercase tracking-wider">OBS</th>
+              <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">OBS</th>
               <th className="px-3 py-3 w-10"></th>
             </tr>
           </thead>
@@ -73,8 +73,8 @@ const StockTable = ({ items, onChange }: StockTableProps) => {
               return (
                 <tr
                   key={item.id}
-                  className={`border-t border-border transition-colors hover:bg-muted/30 ${
-                    idx % 2 === 0 ? "" : "bg-muted/20"
+                  className={`border-t border-border/50 transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
+                    idx % 2 === 0 ? "" : "bg-muted/10"
                   }`}
                 >
                   <td className="px-2 py-1.5">
@@ -114,8 +114,8 @@ const StockTable = ({ items, onChange }: StockTableProps) => {
                     </td>
                   ))}
                   <td className="px-3 py-1.5 text-center">
-                    <span className={`inline-flex items-center justify-center w-20 h-8 rounded font-bold text-sm ${
-                      faltas < 0 ? "bg-destructive/10 text-destructive" : faltas > 0 ? "bg-primary/10 text-primary" : "bg-success/10 text-success"
+                    <span className={`inline-flex items-center justify-center w-20 h-8 rounded-full font-bold text-xs ${
+                      faltas < 0 ? "bg-destructive/15 text-destructive" : faltas > 0 ? "bg-primary/15 text-primary" : "bg-success/15 text-success"
                     }`}>
                       {faltas.toFixed(1)}
                     </span>
@@ -142,7 +142,7 @@ const StockTable = ({ items, onChange }: StockTableProps) => {
           </tbody>
         </table>
       </div>
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-border/50">
         <Button variant="outline" size="sm" onClick={addRow} className="gap-1.5">
           <Plus className="w-3.5 h-3.5" /> Adicionar Linha
         </Button>
