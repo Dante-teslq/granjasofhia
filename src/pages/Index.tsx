@@ -93,7 +93,7 @@ const Index = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-10 space-y-8 max-w-[1400px]">
+      <div className="p-6 lg:p-10 space-y-8 max-w-[1400px] animate-fade-in-up">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -143,9 +143,9 @@ const Index = () => {
                 <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomBarTooltip />} cursor={{ fill: "hsl(0,0%,90%)", opacity: 0.15 }} />
                 <Legend iconSize={8} wrapperStyle={{ fontSize: 11, paddingTop: 16 }} />
-                <Bar dataKey="vendas" name="Vendas" fill={CHART_COLORS.vendas} radius={[6, 6, 0, 0]} animationDuration={800} />
-                <Bar dataKey="entradas" name="Entradas" fill={CHART_COLORS.entradas} radius={[6, 6, 0, 0]} animationDuration={800} animationBegin={200} />
-                <Bar dataKey="perdas" name="Perdas" fill={CHART_COLORS.perdas} radius={[6, 6, 0, 0]} animationDuration={800} animationBegin={400} />
+                <Bar dataKey="vendas" name="Vendas" fill={CHART_COLORS.vendas} radius={[6, 6, 6, 6]} animationDuration={800} />
+                <Bar dataKey="entradas" name="Entradas" fill={CHART_COLORS.entradas} radius={[6, 6, 6, 6]} animationDuration={800} animationBegin={200} />
+                <Bar dataKey="perdas" name="Perdas" fill={CHART_COLORS.perdas} radius={[6, 6, 6, 6]} animationDuration={800} animationBegin={400} />
               </BarChart>
             </ResponsiveContainer>
           </div>
