@@ -37,7 +37,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const ApuracaoPage = () => {
   const { currentRole } = useApp();
   const isAdmin = currentRole === "Administrador";
-  const { pontosVenda, anos, getStoreData, getRanking, upsertRegistro, deleteRegistro, loading, registros } = useVendasRegistros();
+  const { pontosVenda, anos, getStoreData, getRanking, getRankingByMonth, upsertRegistro, deleteRegistro, loading, registros } = useVendasRegistros();
 
   const [selectedStore, setSelectedStore] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
@@ -48,7 +48,7 @@ const ApuracaoPage = () => {
   const [editYear, setEditYear] = useState("");
   const [editMonth, setEditMonth] = useState(1);
   const [editValue, setEditValue] = useState("");
-
+  const [rankingMonth, setRankingMonth] = useState(0); // 0 = all months
 
   // Auto-select first store/year when data loads
   const activeStore = selectedStore || pontosVenda[0] || "";
@@ -70,7 +70,9 @@ const ApuracaoPage = () => {
   const totalPrev = prevYearData.reduce((a: number, b: number) => a + b, 0);
   const variation = totalPrev > 0 ? (((totalCurrent - totalPrev) / totalPrev) * 100).toFixed(2) : "—";
 
-  const ranking = getRanking(Number(activeYear));
+  const ranking = rankingMonth === 0
+    ? getRanking(Number(activeYear))
+    : getRankingByMonth(Number(activeYear), rankingMonth);
 
   const exportCSV = () => {
     const headers = ["Mês", ...storeYears];
@@ -242,9 +244,24 @@ const ApuracaoPage = () => {
         {/* Ranking */}
         {ranking.length > 0 && (
           <div className="glass-card rounded-lg p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Trophy className="w-4 h-4 text-primary" />
-              <h3 className="text-sm font-semibold text-foreground">Ranking de Pontos de Venda — {activeYear}</h3>
+            <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Ranking de Pontos de Venda — {rankingMonth === 0 ? `Anual ${activeYear}` : `${months[rankingMonth - 1]}/${activeYear}`}
+                </h3>
+              </div>
+              <Select value={String(rankingMonth)} onValueChange={(v) => setRankingMonth(Number(v))}>
+                <SelectTrigger className="w-[140px] h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Todos os meses</SelectItem>
+                  {months.map((m, i) => (
+                    <SelectItem key={i} value={String(i + 1)}>{m}/{activeYear}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               {ranking.map((r, i) => {

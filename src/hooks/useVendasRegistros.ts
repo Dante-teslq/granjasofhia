@@ -119,6 +119,19 @@ export function useVendasRegistros() {
       .sort((a, b) => b.total - a.total);
   };
 
+  // Ranking by specific month and year
+  const getRankingByMonth = (year: number, month: number) => {
+    const map = new Map<string, number>();
+    registros
+      .filter((r) => r.ano === year && r.mes === month && Number(r.total_calculado) > 0)
+      .forEach((r) => {
+        map.set(r.ponto_venda, Number(r.total_calculado));
+      });
+    return [...map.entries()]
+      .map(([store, total]) => ({ store, total }))
+      .sort((a, b) => b.total - a.total);
+  };
+
   return {
     registros,
     loading,
@@ -127,6 +140,7 @@ export function useVendasRegistros() {
     getStoreData,
     getStoreYearData,
     getRanking,
+    getRankingByMonth,
     upsertRegistro,
     deleteRegistro,
     addPontoVenda,
