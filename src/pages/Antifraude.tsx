@@ -75,10 +75,10 @@ const AntifravdePage = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-6 max-w-[1400px]">
+      <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 max-w-[1400px]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Painel de Segurança</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Painel de Segurança</h1>
             <p className="text-muted-foreground text-sm mt-1">
               Dashboard exclusivo — Indicadores de risco e monitoramento de dados
             </p>

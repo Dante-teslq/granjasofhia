@@ -4,6 +4,7 @@ import GlobalDateFilter from "@/components/GlobalDateFilter";
 import { FileText, Search, Download, ShieldCheck, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useApp } from "@/contexts/AppContext";
@@ -111,13 +112,15 @@ const AuditoriaPage = () => {
     toast.success("PDF exportado com sucesso!");
   };
 
+  const isMobile = useIsMobile();
+
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-6 max-w-[1400px]">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 max-w-[1400px]">
+        <div className="flex flex-col gap-3 md:gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Log de Auditoria</h1>
-            <p className="text-muted-foreground text-sm mt-1 flex items-center gap-1.5">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Log de Auditoria</h1>
+            <p className="text-muted-foreground text-xs md:text-sm mt-1 flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               Registro imutável — somente leitura, sem edição ou exclusão
             </p>
@@ -132,55 +135,57 @@ const AuditoriaPage = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-2">
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
+        <div className="flex flex-col md:flex-row flex-wrap gap-2">
+          <div className="relative flex-1 min-w-[200px] max-w-full md:max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Buscar por usuário, módulo ou descrição..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 h-10"
             />
           </div>
-          <Select value={filterUser} onValueChange={setFilterUser}>
-            <SelectTrigger className="w-[150px] h-10 text-sm">
-              <SelectValue placeholder="Usuário" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos Usuários</SelectItem>
-              {uniqueUsers.map((u) => (
-                <SelectItem key={u} value={u}>{u}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={filterAction} onValueChange={setFilterAction}>
-            <SelectTrigger className="w-[170px] h-10 text-sm">
-              <SelectValue placeholder="Ação" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todas Ações</SelectItem>
-              <SelectItem value="create">Criação</SelectItem>
-              <SelectItem value="update">Atualização</SelectItem>
-              <SelectItem value="delete">Exclusão</SelectItem>
-              <SelectItem value="adjustment">Ajuste</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filterModule} onValueChange={setFilterModule}>
-            <SelectTrigger className="w-[170px] h-10 text-sm">
-              <SelectValue placeholder="Módulo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos Módulos</SelectItem>
-              {uniqueModules.map((m) => (
-                <SelectItem key={m} value={m}>{m}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex flex-wrap gap-2">
+            <Select value={filterUser} onValueChange={setFilterUser}>
+              <SelectTrigger className="w-full sm:w-[150px] h-10 text-sm">
+                <SelectValue placeholder="Usuário" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos Usuários</SelectItem>
+                {uniqueUsers.map((u) => (
+                  <SelectItem key={u} value={u}>{u}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filterAction} onValueChange={setFilterAction}>
+              <SelectTrigger className="w-full sm:w-[170px] h-10 text-sm">
+                <SelectValue placeholder="Ação" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todas Ações</SelectItem>
+                <SelectItem value="create">Criação</SelectItem>
+                <SelectItem value="update">Atualização</SelectItem>
+                <SelectItem value="delete">Exclusão</SelectItem>
+                <SelectItem value="adjustment">Ajuste</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterModule} onValueChange={setFilterModule}>
+              <SelectTrigger className="w-full sm:w-[170px] h-10 text-sm">
+                <SelectValue placeholder="Módulo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos Módulos</SelectItem>
+                {uniqueModules.map((m) => (
+                  <SelectItem key={m} value={m}>{m}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex gap-1">
-            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5 h-10">
+            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5 h-10 flex-1 sm:flex-none">
               <Download className="w-3.5 h-3.5" /> CSV
             </Button>
-            <Button variant="outline" size="sm" onClick={exportPDF} className="gap-1.5 h-10">
+            <Button variant="outline" size="sm" onClick={exportPDF} className="gap-1.5 h-10 flex-1 sm:flex-none">
               <Download className="w-3.5 h-3.5" /> PDF
             </Button>
           </div>
@@ -191,6 +196,37 @@ const AuditoriaPage = () => {
             <div className="flex items-center justify-center py-12">
               <Loader2 className="w-6 h-6 animate-spin text-primary" />
               <span className="ml-2 text-sm text-muted-foreground">Carregando logs...</span>
+            </div>
+          ) : isMobile ? (
+            <div className="divide-y divide-border">
+              {filtered.map((log) => (
+                <div key={log.id} className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">
+                      {format(new Date(log.created_at), "dd/MM/yyyy HH:mm")}
+                    </span>
+                    <Badge variant="outline" className={`text-xs ${
+                      log.action === "create" ? "border-success/40 text-success" :
+                      log.action === "update" ? "border-primary/40 text-primary" :
+                      log.action === "delete" ? "border-destructive/40 text-destructive" :
+                      "border-warning/40 text-warning"
+                    }`}>
+                      {ACTION_LABELS[log.action] || log.action}
+                    </Badge>
+                  </div>
+                  <p className="text-sm font-medium">{log.item_description}</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{log.usuario}</span>
+                    <span>•</span>
+                    <span>{log.module}</span>
+                  </div>
+                </div>
+              ))}
+              {filtered.length === 0 && !loading && (
+                <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+                  Nenhum registro encontrado no período selecionado.
+                </div>
+              )}
             </div>
           ) : (
             <div className="overflow-x-auto">

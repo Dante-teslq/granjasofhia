@@ -207,10 +207,10 @@ const EvidenciasPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-8 max-w-[1400px]">
+      <div className="p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1400px]">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Evidências de Perdas</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-foreground">Evidências de Perdas</h1>
           <p className="text-muted-foreground text-sm mt-1">
             Registro fotográfico de ovos quebrados e trincados vinculado ao estoque
           </p>
@@ -227,7 +227,7 @@ const EvidenciasPage = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {/* Data */}
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground flex items-center gap-1.5">

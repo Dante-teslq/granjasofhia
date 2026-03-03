@@ -68,7 +68,6 @@ const EstoquePage = () => {
     const isNew = !prevStockRef.current;
     const prevItems = prevStockRef.current ? JSON.parse(prevStockRef.current) : [];
 
-    // Check for fraud signals
     const currentHour = new Date().getHours();
     const isAfterHours = currentHour < settings.operationStartHour || currentHour > settings.operationEndHour;
 
@@ -84,7 +83,6 @@ const EstoquePage = () => {
       updateRiskProfile(currentRole, { afterHoursOps: 1 });
     }
 
-    // Check high adjustments
     for (const item of stockItems) {
       if (!item.descricao) continue;
       const prevItem = prevItems.find((p: any) => p.codigo === item.codigo);
@@ -109,7 +107,6 @@ const EstoquePage = () => {
 
     saveStock(dateRange.from);
 
-    // Audit log
     for (const item of stockItems) {
       if (!item.descricao) continue;
       const action = isNew ? "create" : "update";
@@ -130,7 +127,6 @@ const EstoquePage = () => {
   };
 
   const handleSave = () => {
-    // Check if evidence required for high adjustments
     if (prevStockRef.current) {
       const highAdj = detectHighAdjustments();
       if (highAdj.length > 0) {
@@ -159,17 +155,17 @@ const EstoquePage = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-6 max-w-[1400px]">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 max-w-[1400px]">
+        <div className="flex flex-col gap-3 md:gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Conferência de Estoque</h1>
-            <p className="text-muted-foreground text-sm mt-1">Controle diário por PDV — Estoque Sistema × Estoque Loja</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Conferência de Estoque</h1>
+            <p className="text-muted-foreground text-xs md:text-sm mt-1">Controle diário por PDV — Estoque Sistema × Estoque Loja</p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Store className="w-4 h-4 text-primary" />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Store className="w-4 h-4 text-primary shrink-0" />
               <Select value={currentStore} onValueChange={(v) => setCurrentStore(v as any)}>
-                <SelectTrigger className="w-[180px] h-9 text-sm">
+                <SelectTrigger className="flex-1 sm:w-[180px] h-10 md:h-9 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -183,7 +179,7 @@ const EstoquePage = () => {
           </div>
         </div>
         <StockTable items={stockItems} onChange={setStockItems} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             {lastStockSave && (
               <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -192,14 +188,13 @@ const EstoquePage = () => {
               </p>
             )}
           </div>
-          <Button onClick={handleSave} className="gap-2">
+          <Button onClick={handleSave} className="gap-2 w-full sm:w-auto h-12 md:h-10">
             <Save className="w-4 h-4" />
             Salvar Registro
           </Button>
         </div>
       </div>
 
-      {/* Evidence Dialog for High Adjustments */}
       <Dialog open={evidenceDialog} onOpenChange={(o) => !o && setEvidenceDialog(false)}>
         <DialogContent>
           <DialogHeader>
