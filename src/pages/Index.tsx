@@ -33,11 +33,9 @@ const Index = () => {
   const { getStockInRange } = useInventory();
   const { dateRange } = useApp();
 
-  // Use date range from global filter
   const allStockItems = getStockInRange(dateRange.from, dateRange.to);
   const totalTrincado = allStockItems.reduce((sum, item) => sum + item.trincado, 0);
   const totalQuebrado = allStockItems.reduce((sum, item) => sum + item.quebrado, 0);
-  // Apenas quebrados são perdas definitivas; trincados são reclassificação
   const totalPerdas = totalQuebrado;
   const totalFaltas = allStockItems.reduce((sum, item) => sum + Math.abs(item.estoqueLoja - item.estoqueSistema), 0);
 
@@ -93,30 +91,30 @@ const Index = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-10 space-y-8 max-w-[1400px] animate-fade-in-up">
+      <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 max-w-[1400px] animate-fade-in-up">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">Dashboard Executivo</h1>
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-2">Visão geral operacional — Granja Sofhia</p>
+            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">Dashboard Executivo</h1>
+            <p className="text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1 md:mt-2">Visão geral operacional — Granja Sofhia</p>
           </div>
           <GlobalDateFilter />
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           {stats.map((stat) => (
             <div
               key={stat.label}
               onClick={() => navigate(stat.link)}
-              className="glass-card-interactive p-6"
+              className="glass-card-interactive p-4 md:p-6"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary">
-                  <stat.icon className="w-5 h-5" />
+              <div className="flex items-center justify-between mb-3 md:mb-4">
+                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 text-primary">
+                  <stat.icon className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
                 {stat.trend && (
-                  <span className={`text-xs font-bold flex items-center gap-0.5 px-3 py-1 rounded-full uppercase tracking-wide ${
+                  <span className={`text-[10px] md:text-xs font-bold flex items-center gap-0.5 px-2 md:px-3 py-1 rounded-full uppercase tracking-wide ${
                     stat.up
                       ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
                       : "bg-red-100/80 text-red-700 dark:bg-red-500/10 dark:text-red-400"
@@ -126,21 +124,21 @@ const Index = () => {
                   </span>
                 )}
               </div>
-              <p className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{stat.value}</p>
-              <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1.5">{stat.label}</p>
+              <p className="text-xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{stat.value}</p>
+              <p className="text-[10px] md:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1 md:mt-1.5">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 glass-card p-6 lg:p-8">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Movimentação Semanal</h3>
-            <ResponsiveContainer width="100%" height={280}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="lg:col-span-2 glass-card p-4 md:p-6 lg:p-8">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-6">Movimentação Semanal</h3>
+            <ResponsiveContainer width="100%" height={220}>
               <BarChart data={weeklyData} barGap={6}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" strokeOpacity={0.5} />
-                <XAxis dataKey="dia" tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="dia" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomBarTooltip />} cursor={{ fill: "hsl(0,0%,90%)", opacity: 0.15 }} />
                 <Legend iconSize={8} wrapperStyle={{ fontSize: 11, paddingTop: 16 }} />
                 <Bar dataKey="vendas" name="Vendas" fill={CHART_COLORS.vendas} radius={[6, 6, 6, 6]} animationDuration={800} />
@@ -150,8 +148,8 @@ const Index = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="glass-card p-6 lg:p-8">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Composição de Perdas</h3>
+          <div className="glass-card p-4 md:p-6 lg:p-8">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-6">Composição de Perdas</h3>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
@@ -169,7 +167,7 @@ const Index = () => {
                 <Tooltip content={<CustomPieTooltip />} />
               </PieChart>
             </ResponsiveContainer>
-            <div className="flex justify-center gap-4 mt-4">
+            <div className="flex flex-col md:flex-row justify-center gap-2 md:gap-4 mt-4">
               {perdasData.map((item) => (
                 <div key={item.name} className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: item.color }} />
@@ -181,8 +179,8 @@ const Index = () => {
         </div>
 
         {/* Alerts */}
-        <div className="glass-card p-6 lg:p-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="glass-card p-4 md:p-6 lg:p-8">
+          <div className="flex items-center justify-between mb-4 md:mb-6">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Alertas Inteligentes</h3>
             <button onClick={() => navigate("/alertas")} className="text-xs text-primary hover:underline font-bold uppercase tracking-wide">
               Ver todos
@@ -193,7 +191,7 @@ const Index = () => {
               <div
                 key={i}
                 onClick={() => navigate(alert.link)}
-                className={`group flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all duration-200 border ${
+                className={`group flex items-start gap-3 md:gap-4 p-3 md:p-4 rounded-xl cursor-pointer transition-all duration-200 border ${
                   alert.type === "danger"
                     ? "border-red-200/60 bg-red-50/60 hover:bg-red-50 dark:border-red-500/20 dark:bg-red-500/5 dark:hover:bg-red-500/10"
                     : alert.type === "warning"
@@ -201,7 +199,7 @@ const Index = () => {
                     : "border-slate-200/60 bg-slate-50/60 hover:bg-slate-50 dark:border-slate-700/30 dark:bg-slate-800/30 dark:hover:bg-slate-800/50"
                 }`}
               >
-                <div className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 ${
+                <div className={`flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl shrink-0 ${
                   alert.type === "danger"
                     ? "bg-red-100/80 text-red-600 dark:bg-red-500/10 dark:text-red-400"
                     : alert.type === "warning"
@@ -220,14 +218,14 @@ const Index = () => {
         </div>
 
         {/* Divergence + Ranking */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="glass-card p-6 lg:p-8">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Índice de Divergência</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          <div className="glass-card p-4 md:p-6 lg:p-8">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-6">Índice de Divergência</h3>
             <div className="flex items-end gap-4">
-              <span className="text-5xl font-extrabold tracking-tight text-primary">2.3%</span>
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 pb-2">dentro do limite aceitável</span>
+              <span className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary">2.3%</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 pb-1 md:pb-2">dentro do limite aceitável</span>
             </div>
-            <div className="mt-6 h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="mt-4 md:mt-6 h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
               <div className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full transition-all" style={{ width: "23%" }} />
             </div>
             <div className="flex justify-between mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -237,24 +235,24 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="glass-card p-6 lg:p-8">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-6">Ranking de Movimentação</h3>
+          <div className="glass-card p-4 md:p-6 lg:p-8">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-6">Ranking de Movimentação</h3>
             <div className="space-y-2">
               {[
                 { name: "Operador 1", mov: 245, risk: "baixo" },
                 { name: "Operador 2", mov: 198, risk: "baixo" },
                 { name: "Operador 3", mov: 312, risk: "médio" },
               ].map((op, i) => (
-                <div key={i} className="group flex items-center justify-between p-3.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700/50">
+                <div key={i} className="group flex items-center justify-between p-3 md:p-3.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-700/50">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm bg-gradient-to-br from-primary/20 to-primary/5 text-primary shadow-sm">
+                    <div className="w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-sm bg-gradient-to-br from-primary/20 to-primary/5 text-primary shadow-sm">
                       {i + 1}
                     </div>
                     <span className="text-sm font-medium text-slate-900 dark:text-white">{op.name}</span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3">
                     <span className="text-sm font-bold text-slate-900 dark:text-white">{op.mov}</span>
-                    <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${
+                    <span className={`px-2 md:px-3 py-1 rounded-full text-[10px] md:text-[11px] font-bold uppercase tracking-wide ${
                       op.risk === "baixo"
                         ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
                         : "bg-amber-100/80 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useApp } from "@/contexts/AppContext";
 
 const roles = [
@@ -70,82 +71,115 @@ const UsuariosPage = () => {
     setDialogOpen(false);
   };
 
+  const isMobile = useIsMobile();
+
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-6 max-w-[1400px]">
+      <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 max-w-[1400px]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Usuários & Perfis</h1>
-            <p className="text-muted-foreground text-sm mt-1">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Usuários & Perfis</h1>
+            <p className="text-muted-foreground text-xs md:text-sm mt-1">
               Controle de permissões RBAC — nenhum perfil pode excluir registros
             </p>
           </div>
           {isAdmin && (
-            <Button onClick={openAdd} className="gap-2">
+            <Button onClick={openAdd} className="gap-2 w-full sm:w-auto h-12 md:h-10">
               <UserPlus className="w-4 h-4" />
               Adicionar Perfil
             </Button>
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {roles.map((role) => (
-            <div key={role.name} className="glass-card rounded-lg p-4">
+            <div key={role.name} className="glass-card rounded-lg p-3 md:p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Shield className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground">{role.name}</span>
+                <span className="text-xs md:text-sm font-semibold text-foreground">{role.name}</span>
               </div>
-              <p className="text-xs text-muted-foreground">{role.desc}</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">{role.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="glass-card rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-muted/50 text-foreground">
-                  <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nome</th>
-                  <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Email</th>
-                  <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Telefone</th>
-                  <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Perfil</th>
-                  <th className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Status</th>
+        {isMobile ? (
+          <div className="space-y-3">
+            {users.map((user, idx) => (
+              <div key={idx} className="glass-card rounded-xl p-4 space-y-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{user.email || "—"}</p>
+                  </div>
+                  <Badge
+                    variant={user.status === "ativo" ? "default" : "secondary"}
+                    className={user.status === "ativo" ? "bg-success text-success-foreground" : ""}
+                  >
+                    {user.status}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="border-primary/30 text-primary text-xs">{user.role}</Badge>
+                    {user.phone && <span className="text-xs text-muted-foreground">{user.phone}</span>}
+                  </div>
                   {isAdmin && (
-                    <th className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Ações</th>
+                    <Button variant="ghost" size="sm" onClick={() => openEdit(idx)} className="gap-1.5 text-primary hover:text-primary h-9">
+                      <Pencil className="w-3.5 h-3.5" /> Editar
+                    </Button>
                   )}
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, idx) => (
-                  <tr key={idx} className={`border-t border-border hover:bg-muted/30 ${idx % 2 === 0 ? "" : "bg-muted/20"}`}>
-                    <td className="px-4 py-3 font-medium">{user.name}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{user.email || "—"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{user.phone || "—"}</td>
-                    <td className="px-4 py-3">
-                      <Badge variant="outline" className="border-primary/30 text-primary text-xs">{user.role}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <Badge
-                        variant={user.status === "ativo" ? "default" : "secondary"}
-                        className={user.status === "ativo" ? "bg-success text-success-foreground" : ""}
-                      >
-                        {user.status}
-                      </Badge>
-                    </td>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="glass-card rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-muted/50 text-foreground">
+                    <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nome</th>
+                    <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Email</th>
+                    <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Telefone</th>
+                    <th className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Perfil</th>
+                    <th className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Status</th>
                     {isAdmin && (
-                      <td className="px-4 py-3 text-center">
-                        <Button variant="ghost" size="sm" onClick={() => openEdit(idx)} className="gap-1.5 text-primary hover:text-primary">
-                          <Pencil className="w-3.5 h-3.5" />
-                          Editar
-                        </Button>
-                      </td>
+                      <th className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Ações</th>
                     )}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {users.map((user, idx) => (
+                    <tr key={idx} className={`border-t border-border hover:bg-muted/30 ${idx % 2 === 0 ? "" : "bg-muted/20"}`}>
+                      <td className="px-4 py-3 font-medium">{user.name}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{user.email || "—"}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{user.phone || "—"}</td>
+                      <td className="px-4 py-3">
+                        <Badge variant="outline" className="border-primary/30 text-primary text-xs">{user.role}</Badge>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <Badge
+                          variant={user.status === "ativo" ? "default" : "secondary"}
+                          className={user.status === "ativo" ? "bg-success text-success-foreground" : ""}
+                        >
+                          {user.status}
+                        </Badge>
+                      </td>
+                      {isAdmin && (
+                        <td className="px-4 py-3 text-center">
+                          <Button variant="ghost" size="sm" onClick={() => openEdit(idx)} className="gap-1.5 text-primary hover:text-primary">
+                            <Pencil className="w-3.5 h-3.5" /> Editar
+                          </Button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
@@ -160,20 +194,20 @@ const UsuariosPage = () => {
             <div className="space-y-4 py-2">
               <div>
                 <label className="text-sm font-medium text-foreground">Nome *</label>
-                <Input value={formUser.name} onChange={(e) => setFormUser({ ...formUser, name: e.target.value })} placeholder="Nome completo" />
+                <Input value={formUser.name} onChange={(e) => setFormUser({ ...formUser, name: e.target.value })} placeholder="Nome completo" className="h-10" />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground">Email</label>
-                <Input type="email" value={formUser.email} onChange={(e) => setFormUser({ ...formUser, email: e.target.value })} placeholder="email@granja.com" />
+                <Input type="email" value={formUser.email} onChange={(e) => setFormUser({ ...formUser, email: e.target.value })} placeholder="email@granja.com" className="h-10" />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground">Telefone</label>
-                <Input value={formUser.phone} onChange={(e) => setFormUser({ ...formUser, phone: e.target.value })} placeholder="(00) 00000-0000" />
+                <Input value={formUser.phone} onChange={(e) => setFormUser({ ...formUser, phone: e.target.value })} placeholder="(00) 00000-0000" className="h-10" />
               </div>
               <div>
                 <label className="text-sm font-medium text-foreground">Cargo *</label>
                 <Select value={formUser.role} onValueChange={(v) => setFormUser({ ...formUser, role: v })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

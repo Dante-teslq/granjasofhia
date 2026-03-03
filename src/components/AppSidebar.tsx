@@ -16,14 +16,18 @@ const allLinks = [
   { to: "/configuracoes", icon: Settings, label: "Configurações", section: "Sistema" },
 ];
 
-const AppSidebar = () => {
+interface AppSidebarProps {
+  onNavigate?: () => void;
+}
+
+const AppSidebar = ({ onNavigate }: AppSidebarProps) => {
   const { currentRole, setCurrentRole, canAccess } = useApp();
 
   const filteredLinks = allLinks.filter((link) => canAccess(link.to));
   const sections = [...new Set(filteredLinks.map((l) => l.section))];
 
   return (
-    <aside className="w-64 min-h-screen bg-sidebar text-sidebar-foreground flex flex-col border-r border-sidebar-border shrink-0">
+    <aside className="w-full md:w-64 min-h-0 md:min-h-screen bg-sidebar text-sidebar-foreground flex flex-col border-r border-sidebar-border shrink-0">
       <div className="p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-md bg-primary flex items-center justify-center">
@@ -40,7 +44,7 @@ const AppSidebar = () => {
         </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-6">
+      <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
         {sections.map((section) => (
           <div key={section} className="space-y-1">
             <p className="px-3 text-[10px] uppercase tracking-widest text-sidebar-foreground/40 font-semibold mb-2">
@@ -53,8 +57,9 @@ const AppSidebar = () => {
                   key={link.to}
                   to={link.to}
                   end
+                  onClick={onNavigate}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    `flex items-center gap-3 px-3 py-2.5 md:py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive
                         ? "bg-primary/20 text-primary"
                         : "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"

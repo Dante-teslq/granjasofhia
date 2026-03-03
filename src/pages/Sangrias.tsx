@@ -15,7 +15,6 @@ const SangriasPage = () => {
   const { dateRange, currentRole } = useApp();
   const { addLog } = useAudit();
 
-  // Reload sangrias when date changes
   useEffect(() => {
     loadSangriasForDate(dateRange.from);
   }, [dateRange.from, loadSangriasForDate]);
@@ -41,16 +40,16 @@ const SangriasPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-6 max-w-[1400px]">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 max-w-[1400px]">
+        <div className="flex flex-col gap-3 md:gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Sangrias e Insumos</h1>
-            <p className="text-muted-foreground text-sm mt-1">Controle de sangrias, cartelas e barbantes</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Sangrias e Insumos</h1>
+            <p className="text-muted-foreground text-xs md:text-sm mt-1">Controle de sangrias, cartelas e barbantes</p>
           </div>
           <GlobalDateFilter />
         </div>
         <SangriasTable items={sangriaItems} onChange={setSangriaItems} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             {lastSangriaSave && (
               <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -59,7 +58,7 @@ const SangriasPage = () => {
               </p>
             )}
           </div>
-          <Button onClick={handleSave} className="gap-2">
+          <Button onClick={handleSave} className="gap-2 w-full sm:w-auto h-12 md:h-10">
             <Save className="w-4 h-4" />
             Salvar Registro
           </Button>
