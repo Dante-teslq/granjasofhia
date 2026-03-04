@@ -79,6 +79,7 @@ const App = () => (
               <Sonner />
               <OfflineIndicator />
               <PwaInstallBanner />
+              <PwaDesktopInstallBanner />
               <PwaUpdateNotifier />
               <BrowserRouter>
                 <AppRoutes />
