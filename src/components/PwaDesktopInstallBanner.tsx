@@ -25,11 +25,15 @@ export function PwaDesktopInstallBanner() {
     const dismissed = localStorage.getItem(DISMISSED_KEY);
     if (dismissed && Date.now() - parseInt(dismissed, 10) < DISMISS_DURATION) return;
 
+    // Mostra o banner no desktop assim que a página abrir.
+    // Se o evento beforeinstallprompt chegar, habilitamos o botão nativo de instalação.
+    setVisible(true);
+
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setVisible(true);
     };
+
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, [isStandalone, isMobile]);
@@ -73,22 +77,29 @@ export function PwaDesktopInstallBanner() {
       <Monitor style={{ width: 20, height: 20, flexShrink: 0, marginTop: 2, color: "#b99936" }} />
       <div style={{ flex: 1 }}>
         <strong style={{ display: "block", marginBottom: 2 }}>Instale o app no seu computador</strong>
+        <span style={{ color: "hsl(0,0%,70%)" }}>
+          {deferredPrompt
+            ? "Abra direto como aplicativo e acesse mais rápido."
+            : "No Chrome, use o ícone de instalação na barra de endereço para adicionar este app."}
+        </span>
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-          <button
-            onClick={handleInstall}
-            style={{
-              background: "#b99936",
-              color: "#fff",
-              border: "none",
-              padding: "5px 12px",
-              borderRadius: 6,
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Instalar
-          </button>
+          {deferredPrompt && (
+            <button
+              onClick={handleInstall}
+              style={{
+                background: "#b99936",
+                color: "#fff",
+                border: "none",
+                padding: "5px 12px",
+                borderRadius: 6,
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Instalar
+            </button>
+          )}
           <button
             onClick={dismiss}
             style={{
