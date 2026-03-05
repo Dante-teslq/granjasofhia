@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
-import { Save, CheckCircle, Store, Camera } from "lucide-react";
+import { ptBR } from "date-fns/locale";
+import { Save, CheckCircle, Store, Camera, CalendarIcon, Trash2 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import StockTable from "@/components/StockTable";
 import { Button } from "@/components/ui/button";
@@ -8,16 +9,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useInventory } from "@/contexts/InventoryContext";
 import { useApp } from "@/contexts/AppContext";
 import { useAudit } from "@/contexts/AuditContext";
 import { useFraud } from "@/contexts/FraudContext";
 import { STORES } from "@/types/inventory";
 import { toast } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const EstoquePage = () => {
   const { stockItems, setStockItems, saveStock, lastStockSave, currentStore, setCurrentStore, loadStockForDate, allSavedStock } = useInventory();
-  const { currentRole, dateRange, settings } = useApp();
+  const { currentRole, dateRange, setDateRange, settings, profile } = useApp();
   const { addLog } = useAudit();
   const { fraudSettings, addAlert, updateRiskProfile } = useFraud();
   const prevStockRef = useRef<string | null>(null);
@@ -26,15 +42,22 @@ const EstoquePage = () => {
   const [evidenceJustification, setEvidenceJustification] = useState("");
   const [evidencePhoto, setEvidencePhoto] = useState<File | null>(null);
 
-  useEffect(() => {
-    loadStockForDate(dateRange.from);
-  }, [dateRange.from, currentStore, loadStockForDate]);
+  const isAdmin = currentRole === "Administrador";
+  const selectedDate = dateRange.from;
+
+  const setSelectedDate = (date: Date) => {
+    setDateRange({ from: date, to: date });
+  };
 
   useEffect(() => {
-    const key = `${format(dateRange.from, "yyyy-MM-dd")}|${currentStore}`;
+    loadStockForDate(selectedDate);
+  }, [selectedDate, currentStore, loadStockForDate]);
+
+  useEffect(() => {
+    const key = `${format(selectedDate, "yyyy-MM-dd")}|${currentStore}`;
     const existing = allSavedStock[key];
     prevStockRef.current = existing ? JSON.stringify(existing) : null;
-  }, [dateRange.from, currentStore, allSavedStock]);
+  }, [selectedDate, currentStore, allSavedStock]);
 
   const detectHighAdjustments = () => {
     const prevItems = prevStockRef.current ? JSON.parse(prevStockRef.current) : [];
@@ -104,7 +127,7 @@ const EstoquePage = () => {
 
     updateRiskProfile(currentRole, { totalAdjustments: 1 });
 
-    saveStock(dateRange.from);
+    saveStock(selectedDate);
 
     for (const item of stockItems) {
       if (!item.descricao) continue;
@@ -113,7 +136,7 @@ const EstoquePage = () => {
       addLog({
         action,
         module: "Estoque",
-        usuario: currentRole,
+        usuario: profile?.nome || currentRole,
         item_description: `${item.descricao} (${currentStore})`,
         before_data: prevItem ? { estoqueSistema: prevItem.estoqueSistema, estoqueLoja: prevItem.estoqueLoja, quebrado: prevItem.quebrado, trincado: prevItem.trincado } : null,
         after_data: { estoqueSistema: item.estoqueSistema, estoqueLoja: item.estoqueLoja, quebrado: item.quebrado, trincado: item.trincado },
@@ -121,7 +144,7 @@ const EstoquePage = () => {
     }
 
     toast.success("Estoque salvo com sucesso!", {
-      description: `Loja: ${currentStore} — Data: ${format(dateRange.from, "dd/MM/yyyy")}`,
+      description: `Loja: ${currentStore} — Data: ${format(selectedDate, "dd/MM/yyyy")}`,
     });
   };
 
@@ -136,6 +159,33 @@ const EstoquePage = () => {
       }
     }
     executeSave();
+  };
+
+  const handleDeleteRecords = async () => {
+    const dateStr = format(selectedDate, "yyyy-MM-dd");
+    const { error } = await supabase
+      .from("estoque_registros")
+      .delete()
+      .eq("data", dateStr)
+      .eq("loja", currentStore);
+
+    if (error) {
+      toast.error("Erro ao excluir registros.");
+      return;
+    }
+
+    addLog({
+      action: "delete",
+      module: "Estoque",
+      usuario: profile?.nome || currentRole,
+      item_description: `Registros de ${currentStore} em ${format(selectedDate, "dd/MM/yyyy")} excluídos`,
+    });
+
+    // Clear local state
+    loadStockForDate(selectedDate);
+    toast.success("Registros excluídos com sucesso!", {
+      description: `${currentStore} — ${format(selectedDate, "dd/MM/yyyy")}`,
+    });
   };
 
   const confirmEvidenceSave = () => {
@@ -161,6 +211,26 @@ const EstoquePage = () => {
             <p className="text-muted-foreground text-xs md:text-sm mt-1">Controle diário por PDV — Estoque Sistema × Estoque Loja</p>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 flex-wrap">
+            {/* Date Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className={cn("w-full sm:w-[200px] justify-start text-left font-normal h-10 md:h-9")}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {format(selectedDate, "dd/MM/yyyy")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(d) => d && setSelectedDate(d)}
+                  locale={ptBR}
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+
+            {/* Store Selector */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Store className="w-4 h-4 text-primary shrink-0" />
               <Select value={currentStore} onValueChange={(v) => setCurrentStore(v as any)}>
@@ -174,6 +244,30 @@ const EstoquePage = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Admin Delete */}
+            {isAdmin && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" className="gap-1.5 h-10 md:h-9">
+                    <Trash2 className="w-4 h-4" />
+                    Excluir Registros
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Excluir todos os registros de estoque de <strong>{currentStore}</strong> em <strong>{format(selectedDate, "dd/MM/yyyy")}</strong>? Esta ação não pode ser desfeita.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteRecords} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </div>
         <StockTable items={stockItems} onChange={setStockItems} />
