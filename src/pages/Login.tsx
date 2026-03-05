@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { LogIn, UserPlus, Eye, EyeOff } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
 
@@ -12,6 +13,7 @@ const LoginPage = () => {
   const [nome, setNome] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +21,15 @@ const LoginPage = () => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       toast.error(error.message === "Invalid login credentials" ? "Email ou senha inválidos." : error.message);
+    } else {
+      // Mark session persistence preference
+      if (rememberMe) {
+        localStorage.setItem("remember_login", "true");
+      } else {
+        localStorage.removeItem("remember_login");
+      }
+      // Always set session flag for current tab
+      sessionStorage.setItem("session_active", "true");
     }
     setLoading(false);
   };
@@ -93,6 +104,19 @@ const LoginPage = () => {
                 </button>
               </div>
             </div>
+
+            {!isSignup && (
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="remember"
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked === true)}
+                />
+                <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer select-none">
+                  Manter login por 30 dias
+                </label>
+              </div>
+            )}
 
             <Button type="submit" className="w-full h-11 gap-2" disabled={loading}>
               {loading ? "Aguarde..." : isSignup ? (
