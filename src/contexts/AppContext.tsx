@@ -95,6 +95,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     // Set up auth listener BEFORE getSession
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      // During password recovery, preserve the session without interference
+      if (_event === "PASSWORD_RECOVERY") {
+        setSession(newSession);
+        sessionStorage.setItem("session_active", "true");
+        setLoading(false);
+        return;
+      }
+
       setSession(newSession);
       if (newSession?.user?.id) {
         // Defer to avoid Supabase deadlock
