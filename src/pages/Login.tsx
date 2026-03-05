@@ -111,9 +111,10 @@ const LoginPage = () => {
                   id="remember"
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(checked === true)}
+                  className="h-3.5 w-3.5"
                 />
-                <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer select-none">
-                  Manter login por 30 dias
+                <label htmlFor="remember" className="text-xs text-muted-foreground cursor-pointer select-none">
+                  Manter login
                 </label>
               </div>
             )}

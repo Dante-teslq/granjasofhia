@@ -21,13 +21,24 @@ const ConfiguracoesPage = () => {
 
   useEffect(() => {
     const root = document.documentElement;
+    const applyTheme = (dark: boolean) => {
+      root.classList.toggle("dark", dark);
+      // Update mobile status bar color
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", dark ? "#121212" : "#F0F0F0");
+    };
+
     if (theme === "system") {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      root.classList.toggle("dark", prefersDark);
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      applyTheme(mq.matches);
+      const handler = (e: MediaQueryListEvent) => applyTheme(e.matches);
+      mq.addEventListener("change", handler);
+      localStorage.setItem("theme", theme);
+      return () => mq.removeEventListener("change", handler);
     } else {
-      root.classList.toggle("dark", theme === "dark");
+      applyTheme(theme === "dark");
+      localStorage.setItem("theme", theme);
     }
-    localStorage.setItem("theme", theme);
   }, [theme]);
 
 
