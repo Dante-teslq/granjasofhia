@@ -23,6 +23,7 @@ import { PwaInstallBanner } from "./components/PwaInstallBanner";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import { PwaUpdateNotifier } from "./components/PwaUpdateNotifier";
 import { PwaDesktopInstallBanner } from "./components/PwaDesktopInstallBanner";
+import { PWAInstallBanner } from "./components/PwaUnifiedInstallBanner";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,7 @@ const App = () => (
               <PwaInstallBanner />
               <PwaDesktopInstallBanner />
               <PwaUpdateNotifier />
+              <PWAInstallBanner />
               <BrowserRouter>
                 <AppRoutes />
               </BrowserRouter>
