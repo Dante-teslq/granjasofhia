@@ -30,7 +30,6 @@ const SangriasTable = ({ items, onChange, readOnly }: SangriasTableProps) => {
   const removeRow = (id: string) => onChange(items.filter((item) => item.id !== id));
 
   const fields: { key: keyof SangriaItem; label: string; placeholder: string }[] = [
-    { key: "sangria", label: "Sangria", placeholder: "Ex: R$ 150,00" },
     { key: "cartelasVazias", label: "Cartelas Vazias", placeholder: "Ex: 20 unidades" },
     { key: "barbantes", label: "Barbantes", placeholder: "Ex: 5 rolos" },
     { key: "notacoes", label: "Notações", placeholder: "Ex: Reposição pendente" },
@@ -80,8 +79,7 @@ const SangriasTable = ({ items, onChange, readOnly }: SangriasTableProps) => {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-primary/10 text-foreground">
-              <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Sangria</th>
+             <tr className="bg-primary/10 text-foreground">
               <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Cartelas Vazias</th>
               <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Barbantes</th>
               <th className="px-3 py-3 text-left font-bold text-[11px] uppercase tracking-[0.1em] text-muted-foreground">Campo de Notações</th>

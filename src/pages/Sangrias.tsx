@@ -62,17 +62,17 @@ const SangriasPage = () => {
     await saveItems(editItems, editPDV, profile?.nome || currentRole);
 
     for (const item of editItems) {
-      if (!item.sangria && !item.cartelasVazias && !item.barbantes) continue;
+      if (!item.cartelasVazias && !item.barbantes) continue;
       addLog({
         action: "create",
-        module: "Sangrias",
+        module: "Insumos",
         usuario: profile?.nome || currentRole,
-        item_description: `${editPDV} - ${item.sangria || "registro"}`,
+        item_description: `${editPDV} - insumos`,
         after_data: { cartelasVazias: item.cartelasVazias, barbantes: item.barbantes, notacoes: item.notacoes },
       });
     }
 
-    toast.success("Sangrias salvas com sucesso!", {
+    toast.success("Insumos salvos com sucesso!", {
       description: `${editPDV} — ${format(selectedDate, "dd/MM/yyyy")}`,
     });
     setEditItems([emptyRow()]);
@@ -82,9 +82,9 @@ const SangriasPage = () => {
     await deleteByDate(format(selectedDate, "yyyy-MM-dd"), selectedPDV);
     addLog({
       action: "delete",
-      module: "Sangrias",
+      module: "Insumos",
       usuario: profile?.nome || currentRole,
-      item_description: `Sangrias ${format(selectedDate, "dd/MM/yyyy")} ${selectedPDV !== "all" ? selectedPDV : "todos PDVs"}`,
+      item_description: `Insumos ${format(selectedDate, "dd/MM/yyyy")} ${selectedPDV !== "all" ? selectedPDV : "todos PDVs"}`,
     });
     toast.success("Registros excluídos com sucesso!");
   };
@@ -102,8 +102,8 @@ const SangriasPage = () => {
       <div className="p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6 max-w-[1400px]">
         {/* Header */}
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-foreground">Sangrias e Insumos</h1>
-          <p className="text-muted-foreground text-xs md:text-sm mt-1">Controle diário de sangrias, cartelas e barbantes por ponto de venda</p>
+          <h1 className="text-xl md:text-2xl font-bold text-foreground">Insumos</h1>
+          <p className="text-muted-foreground text-xs md:text-sm mt-1">Controle diário de cartelas e barbantes por ponto de venda</p>
         </div>
 
         {/* Filters */}
@@ -143,8 +143,8 @@ const SangriasPage = () => {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Excluir todos os registros de sangrias de {format(selectedDate, "dd/MM/yyyy")}
+                   <AlertDialogDescription>
+                    Excluir todos os registros de insumos de {format(selectedDate, "dd/MM/yyyy")}
                     {selectedPDV !== "all" ? ` — ${selectedPDV}` : " — todos os PDVs"}? Esta ação não pode ser desfeita.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
