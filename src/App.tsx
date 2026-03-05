@@ -41,7 +41,7 @@ const ProtectedRoute = ({ path, children }: { path: string; children: React.Reac
 };
 
 const AuthGuard = ({ children }: { children: React.ReactNode }) => {
-  const { session, loading, currentRole } = useApp();
+  const { session, loading, profile } = useApp();
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -50,6 +50,14 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     );
   }
   if (!session) return <Navigate to="/login" replace />;
+  // Wait for profile to load before rendering children (prevents wrong role redirect)
+  if (session && !profile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse text-primary text-sm">Carregando perfil...</div>
+      </div>
+    );
+  }
   return <>{children}</>;
 };
 
