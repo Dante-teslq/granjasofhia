@@ -37,6 +37,16 @@ const ResetPassword = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const waitForRecoverySession = async (timeoutMs = 15000) => {
+    const start = Date.now();
+    while (Date.now() - start < timeoutMs) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) return true;
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+    return false;
+  };
+
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -50,12 +60,22 @@ const ResetPassword = () => {
       return;
     }
 
-    if (!sessionReady) {
-      toast.error("Sessão de recuperação não encontrada. Solicite um novo link.");
+    setLoading(true);
+
+    let hasRecoverySession = sessionReady;
+    if (!hasRecoverySession) {
+      hasRecoverySession = await waitForRecoverySession(15000);
+      if (hasRecoverySession) {
+        setSessionReady(true);
+      }
+    }
+
+    if (!hasRecoverySession) {
+      toast.error("Sessão de recuperação não foi validada a tempo. Aguarde alguns segundos e tente novamente ou solicite um novo link.");
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
@@ -67,8 +87,8 @@ const ResetPassword = () => {
 
       if (isSamePasswordError) {
         toast.error("A nova senha não pode ser igual à senha atual. Escolha uma senha diferente.");
-      } else if (message.includes("session")) {
-        toast.error("Sessão expirada. Solicite um novo link de recuperação.");
+      } else if (message.includes("session") || message.includes("expired")) {
+        toast.error("Sessão expirada. Abra o link mais recente enviado por e-mail e tente novamente.");
       } else {
         toast.error(error.message);
       }
