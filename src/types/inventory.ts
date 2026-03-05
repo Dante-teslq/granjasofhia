@@ -12,7 +12,7 @@ export interface StockItem {
 
 export interface SangriaItem {
   id: string;
-  sangria: string;
+  sangria: string; // kept for DB compat, unused in UI
   cartelasVazias: string;
   barbantes: string;
   notacoes: string;
