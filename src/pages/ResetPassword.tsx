@@ -17,17 +17,22 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Wait for Supabase to process the recovery token from the URL
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || (session && event === "SIGNED_IN")) {
-        setSessionReady(true);
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        if (session) {
+          setSessionReady(true);
+        }
       }
     });
 
-    // Check if there's already an active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setSessionReady(true);
-    });
+    // Also check existing session and URL hash
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setSessionReady(true);
+      }
+    };
+    checkSession();
 
     return () => subscription.unsubscribe();
   }, []);
