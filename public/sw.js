@@ -1,26 +1,46 @@
-const CACHE_NAME = 'granja-sofhia-v2';
-const STATIC_ASSETS = ['/', '/logo.jpg', '/favicon.ico', '/manifest.json', '/offline.html'];
+const CACHE_NAME = 'granja-sofhia-v3';
+const STATIC_ASSETS = [
+  '/',
+  '/logo.jpg',
+  '/favicon.ico',
+  '/manifest.json',
+  '/offline.html',
+  '/icons/icon-512x512.png',
+  '/icons/icon-512x512-maskable.png'
+];
 
-const shouldBypassCache = (url, request) => {
-  if (request.method !== 'GET') return true;
+const APP_ROUTES = ['/', '/estoque', '/apuracao', '/alertas'];
 
-  // Never cache Vite/dev/runtime module assets (prevents stale React chunks)
-  return (
-    url.pathname.startsWith('/node_modules/.vite/') ||
-    url.pathname.startsWith('/src/') ||
-    url.pathname.startsWith('/@vite') ||
-    url.pathname.startsWith('/@fs/') ||
-    url.pathname.startsWith('/@id/') ||
-    url.pathname.startsWith('/@react-refresh') ||
-    url.searchParams.has('v')
-  );
-};
+// ── Helpers ──────────────────────────────────────────────────
+const isViteDevAsset = (url) =>
+  url.pathname.startsWith('/node_modules/.vite/') ||
+  url.pathname.startsWith('/src/') ||
+  url.pathname.startsWith('/@vite') ||
+  url.pathname.startsWith('/@fs/') ||
+  url.pathname.startsWith('/@id/') ||
+  url.pathname.startsWith('/@react-refresh') ||
+  url.searchParams.has('v');
 
+const isApiCall = (url) =>
+  url.pathname.startsWith('/rest/') ||
+  url.hostname.includes('supabase') ||
+  url.pathname.startsWith('/auth/');
+
+const isStaticAsset = (request) =>
+  ['image', 'font', 'style'].includes(request.destination);
+
+const isScript = (request) =>
+  request.destination === 'script' || request.url.endsWith('.js') || request.url.endsWith('.mjs');
+
+// ── Install ──────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+  );
   self.skipWaiting();
 });
 
+// ── Activate ─────────────────────────────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -30,42 +50,81 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// ── Fetch ────────────────────────────────────────────────────
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  if (shouldBypassCache(url, request)) {
+  // Skip non-GET, OAuth, and Vite dev assets
+  if (request.method !== 'GET') return;
+  if (url.pathname.startsWith('/~oauth')) return;
+  if (isViteDevAsset(url)) {
     event.respondWith(fetch(request));
     return;
   }
 
-  // Skip OAuth routes
-  if (url.pathname.startsWith('/~oauth')) return;
-
-  // Network First for backend/api calls
-  if (url.origin !== self.location.origin || url.pathname.startsWith('/rest/') || url.hostname.includes('supabase')) {
-    event.respondWith(fetch(request).catch(() => caches.match(request)));
-    return;
-  }
-
-  // Cache First for immutable static assets (images/fonts/styles only)
-  if (request.destination === 'image' || request.destination === 'font' || request.destination === 'style') {
+  // Network First → API / data calls
+  if (isApiCall(url)) {
     event.respondWith(
-      caches.match(request)
-        .then((cached) =>
-          cached ||
-          fetch(request).then((response) => {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-            return response;
-          })
-        )
-        .catch(() => caches.match('/offline.html'))
+      fetch(request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
 
-  // Network First for HTML/navigation and scripts
+  // Cache First → images, fonts, CSS
+  if (isStaticAsset(request)) {
+    event.respondWith(
+      caches.match(request).then((cached) =>
+        cached ||
+        fetch(request).then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        })
+      ).catch(() => caches.match('/offline.html'))
+    );
+    return;
+  }
+
+  // Cache First → JS/scripts (built assets, NOT Vite dev)
+  if (isScript(request)) {
+    event.respondWith(
+      caches.match(request).then((cached) =>
+        cached ||
+        fetch(request).then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        })
+      ).catch(() => caches.match('/offline.html'))
+    );
+    return;
+  }
+
+  // Stale While Revalidate → navigation / routes
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request)
+          .then((response) => {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            return response;
+          })
+          .catch(() => cached || caches.match('/offline.html'));
+        return cached || fetchPromise;
+      })
+    );
+    return;
+  }
+
+  // Default: Network First
   event.respondWith(
     fetch(request)
       .then((response) => {
@@ -73,10 +132,42 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         return response;
       })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match('/offline.html')))
+      .catch(() => caches.match(request).then((c) => c || caches.match('/offline.html')))
   );
 });
 
+// ── Background Sync (queue offline actions) ──────────────────
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'offline-actions') {
+    event.waitUntil(processOfflineQueue());
+  }
+});
+
+async function processOfflineQueue() {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const queue = await cache.match('/__offline_queue__');
+    if (!queue) return;
+
+    const actions = await queue.json();
+    for (const action of actions) {
+      try {
+        await fetch(action.url, {
+          method: action.method || 'POST',
+          headers: action.headers || { 'Content-Type': 'application/json' },
+          body: action.body,
+        });
+      } catch (e) {
+        console.warn('[SW] Failed to replay offline action:', e);
+      }
+    }
+    await cache.delete('/__offline_queue__');
+  } catch (e) {
+    console.warn('[SW] processOfflineQueue error:', e);
+  }
+}
+
+// ── Skip waiting on user request ─────────────────────────────
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
