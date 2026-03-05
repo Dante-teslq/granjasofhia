@@ -70,6 +70,7 @@ const AppRoutes = () => {
       <Route path="/login" element={
         loading ? null : session ? <Navigate to="/" replace /> : <Login />
       } />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<AuthGuard><ProtectedRoute path="/"><RoleBasedHome /></ProtectedRoute></AuthGuard>} />
       <Route path="/estoque" element={<AuthGuard><Estoque /></AuthGuard>} />
       <Route path="/sangrias" element={<AuthGuard><Sangrias /></AuthGuard>} />
