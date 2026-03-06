@@ -178,7 +178,7 @@ const LoginPage = () => {
                     <button
                       type="button"
                       onClick={() => setView("forgot")}
-                      className="text-[11px] text-primary hover:underline font-medium"
+                      className="text-[13px] text-primary hover:underline font-medium"
                     >
                       Esqueceu a senha?
                     </button>
