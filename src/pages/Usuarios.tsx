@@ -36,7 +36,7 @@ const UsuariosPage = () => {
   const [formUser, setFormUser] = useState({ nome: "", email: "", telefone: "", cargo: "Operador" });
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
-  const isAdmin = currentRole === "Administrador";
+  const isAdmin = currentRole === "Admin";
   const isMobile = useIsMobile();
 
   const fetchUsers = async () => {
