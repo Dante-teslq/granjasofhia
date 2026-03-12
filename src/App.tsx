@@ -65,7 +65,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 const RoleBasedHome = () => {
   const { currentRole } = useApp();
   if (currentRole === "Operador" || currentRole === "Vendedor") {
-    return <Navigate to="/estoque" replace />;
+    return <Navigate to="/vendas-diarias" replace />;
   }
   // Administrador, Supervisor, Auditor → Dashboard
   return <Index />;
