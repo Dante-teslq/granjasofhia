@@ -23,6 +23,7 @@ interface UserProfile {
   telefone: string;
   cargo: UserRole;
   status: string;
+  pdv_id: string | null;
 }
 
 interface AppContextData {
