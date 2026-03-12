@@ -34,11 +34,11 @@ interface EvidenciaRecord {
 }
 
 const EvidenciasPage = () => {
-  const { currentRole, dateRange } = useApp();
+  const { currentRole, dateRange, isOperator, userPdvName } = useApp();
   
 
   // Form state
-  const [pontoDeVenda, setPontoDeVenda] = useState<string>(STORES[0]);
+  const [pontoDeVenda, setPontoDeVenda] = useState<string>(isOperator && userPdvName ? userPdvName : STORES[0]);
   const [tipoPerda, setTipoPerda] = useState<string>("Quebrado");
   const [quantidade, setQuantidade] = useState<string>("");
   const [justificativa, setJustificativa] = useState("");
