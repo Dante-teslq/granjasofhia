@@ -38,6 +38,10 @@ interface AppContextData {
   canAccess: (page: string) => boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  /** The PDV name linked to the user (null for admins/supervisors) */
+  userPdvName: string | null;
+  /** Whether the current user is restricted to a single PDV */
+  isOperator: boolean;
 }
 
 const AppContext = createContext<AppContextData | null>(null);
