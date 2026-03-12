@@ -171,6 +171,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const currentRole: UserRole = profile?.cargo || "Operador";
+  const isOperator = currentRole === "Operador" || currentRole === "Vendedor";
 
   const updateSettings = (partial: Partial<AppSettings>) => {
     setSettings((prev) => ({ ...prev, ...partial }));
@@ -193,7 +194,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AppContext.Provider
-      value={{ currentRole, session, profile, loading, dateRange, setDateRange, settings, updateSettings, canAccess, signOut, refreshProfile }}
+      value={{ currentRole, session, profile, loading, dateRange, setDateRange, settings, updateSettings, canAccess, signOut, refreshProfile, userPdvName, isOperator }}
     >
       {children}
     </AppContext.Provider>
