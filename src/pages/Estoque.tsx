@@ -33,7 +33,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const EstoquePage = () => {
   const { stockItems, setStockItems, saveStock, lastStockSave, currentStore, setCurrentStore, loadStockForDate, allSavedStock } = useInventory();
-  const { currentRole, dateRange, setDateRange, settings, profile } = useApp();
+  const { currentRole, dateRange, setDateRange, settings, profile, isOperator, userPdvName } = useApp();
   const { addLog } = useAudit();
   const { fraudSettings, addAlert, updateRiskProfile } = useFraud();
   const prevStockRef = useRef<string | null>(null);
@@ -44,6 +44,13 @@ const EstoquePage = () => {
 
   const isAdmin = currentRole === "Administrador";
   const selectedDate = dateRange.from;
+
+  // If operator, lock to their PDV
+  useEffect(() => {
+    if (isOperator && userPdvName && currentStore !== userPdvName) {
+      setCurrentStore(userPdvName as any);
+    }
+  }, [isOperator, userPdvName, currentStore, setCurrentStore]);
 
   const setSelectedDate = (date: Date) => {
     setDateRange({ from: date, to: date });
