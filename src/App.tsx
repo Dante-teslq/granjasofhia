@@ -65,7 +65,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 const RoleBasedHome = () => {
   const { currentRole } = useApp();
   if (currentRole === "Operador" || currentRole === "Vendedor") {
-    return <Navigate to="/estoque" replace />;
+    return <Navigate to="/vendas-diarias" replace />;
   }
   // Administrador, Supervisor, Auditor → Dashboard
   return <Index />;
@@ -81,7 +81,7 @@ const AppRoutes = () => {
       } />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<AuthGuard><ProtectedRoute path="/"><RoleBasedHome /></ProtectedRoute></AuthGuard>} />
-      <Route path="/estoque" element={<AuthGuard><Estoque /></AuthGuard>} />
+      <Route path="/estoque" element={<AuthGuard><ProtectedRoute path="/estoque"><Estoque /></ProtectedRoute></AuthGuard>} />
       <Route path="/sangrias" element={<AuthGuard><Sangrias /></AuthGuard>} />
       <Route path="/apuracao" element={<AuthGuard><ProtectedRoute path="/apuracao"><Apuracao /></ProtectedRoute></AuthGuard>} />
       <Route path="/auditoria" element={<AuthGuard><ProtectedRoute path="/auditoria"><Auditoria /></ProtectedRoute></AuthGuard>} />
