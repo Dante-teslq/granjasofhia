@@ -17,6 +17,7 @@ import Usuarios from "./pages/Usuarios";
 import Configuracoes from "./pages/Configuracoes";
 import Antifraude from "./pages/Antifraude";
 import Evidencias from "./pages/Evidencias";
+import Transferencias from "./pages/Transferencias";
 import VendasDiarias from "./pages/VendasDiarias";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
