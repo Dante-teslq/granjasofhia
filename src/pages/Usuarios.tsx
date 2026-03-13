@@ -13,7 +13,8 @@ import { useApp } from "@/contexts/AppContext";
 import { supabase } from "@/integrations/supabase/client";
 
 const roles = [
-  { name: "Operador", desc: "Registra entradas e vendas", color: "bg-muted text-foreground" },
+  { name: "Operador de Venda", desc: "Registra vendas e estoque do PDV", color: "bg-muted text-foreground" },
+  { name: "Operador de Depósito", desc: "Gerencia estoque e insumos do depósito", color: "bg-muted text-foreground" },
   { name: "Supervisor", desc: "Aprova ajustes manuais", color: "bg-primary/10 text-primary" },
   { name: "Administrador", desc: "Visualiza relatórios completos", color: "bg-primary/20 text-primary" },
   { name: "Auditor", desc: "Acesso somente leitura", color: "bg-muted text-muted-foreground" },
