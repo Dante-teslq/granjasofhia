@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { format } from "date-fns";
+import { useState, useEffect, useMemo } from "react";
+import { format, startOfMonth, endOfMonth } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
-  ShoppingCart, Plus, Lock, Trash2, TrendingUp, Package, Calendar,
+  ShoppingCart, Plus, Lock, Trash2, Package, Calendar, AlertTriangle,
 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import { useApp } from "@/contexts/AppContext";
 import { useVendasDiarias } from "@/hooks/useVendasDiarias";
 import { STORES, PRODUCT_CATALOG } from "@/types/inventory";
 import { toast } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
 import GlobalDateFilter from "@/components/GlobalDateFilter";
 
 const FORMAS_PAGAMENTO = ["Dinheiro", "PIX", "Cartão Crédito", "Cartão Débito", "Boleto", "Outros"];
