@@ -1,6 +1,6 @@
 import {
   Package, AlertTriangle, ShieldAlert, ShoppingCart, DollarSign,
-  TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Trophy, AlertCircle, Heart,
+  TrendingUp, Trophy, AlertCircle, Heart,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
