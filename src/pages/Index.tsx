@@ -40,10 +40,10 @@ const Index = () => {
 
 
   const stats = [
-    { label: "Vendas Hoje", value: `R$ ${vendas.totalHoje.toFixed(2)}`, icon: ShoppingCart, link: "/vendas-diarias", variation: comparison.vendasHojeVar },
-    { label: "Vendas no Período", value: `R$ ${vendas.totalPeriodo.toFixed(2)}`, icon: DollarSign, link: "/vendas-diarias", variation: comparison.vendasPeriodoVar },
-    { label: "Faltas Totais", value: estoque.hasData ? estoque.totalFaltas.toFixed(1) : "0", icon: Package, link: "/estoque", variation: comparison.faltasVar, invertColor: true },
-    { label: "Alertas Ativos", value: allAlerts.length.toString(), icon: ShieldAlert, link: "/alertas", variation: 0 },
+    { label: "Vendas Hoje", value: `R$ ${vendas.totalHoje.toFixed(2)}`, icon: ShoppingCart, link: "/vendas-diarias" },
+    { label: "Vendas no Período", value: `R$ ${vendas.totalPeriodo.toFixed(2)}`, icon: DollarSign, link: "/vendas-diarias" },
+    { label: "Faltas Totais", value: estoque.hasData ? estoque.totalFaltas.toFixed(1) : "0", icon: Package, link: "/estoque" },
+    { label: "Alertas Ativos", value: allAlerts.length.toString(), icon: ShieldAlert, link: "/alertas" },
   ];
 
   // Chart data
