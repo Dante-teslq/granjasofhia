@@ -17,7 +17,7 @@ const roles = [
   { name: "Operador de Depósito", desc: "Gerencia estoque e insumos do depósito", color: "bg-muted text-foreground" },
   { name: "Supervisor", desc: "Aprova ajustes manuais", color: "bg-primary/10 text-primary" },
   { name: "Administrador", desc: "Visualiza relatórios completos", color: "bg-primary/20 text-primary" },
-  { name: "Auditor", desc: "Acesso somente leitura", color: "bg-muted text-muted-foreground" },
+  
 ];
 
 interface UserProfile {
@@ -290,7 +290,7 @@ const UsuariosPage = () => {
                     <SelectItem value="Operador de Depósito">Operador de Depósito</SelectItem>
                     <SelectItem value="Supervisor">Supervisor</SelectItem>
                     <SelectItem value="Admin">Administrador</SelectItem>
-                    <SelectItem value="Auditor">Auditor</SelectItem>
+                    
                   </SelectContent>
                 </Select>
               </div>
