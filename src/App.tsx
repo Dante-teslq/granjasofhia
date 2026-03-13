@@ -17,6 +17,7 @@ import Usuarios from "./pages/Usuarios";
 import Configuracoes from "./pages/Configuracoes";
 import Antifraude from "./pages/Antifraude";
 import Evidencias from "./pages/Evidencias";
+import Transferencias from "./pages/Transferencias";
 import VendasDiarias from "./pages/VendasDiarias";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
@@ -92,6 +93,7 @@ const AppRoutes = () => {
       <Route path="/antifraude" element={<AuthGuard><ProtectedRoute path="/antifraude"><Antifraude /></ProtectedRoute></AuthGuard>} />
       <Route path="/vendas-diarias" element={<AuthGuard><ProtectedRoute path="/vendas-diarias"><VendasDiarias /></ProtectedRoute></AuthGuard>} />
       <Route path="/evidencias" element={<AuthGuard><ProtectedRoute path="/evidencias"><Evidencias /></ProtectedRoute></AuthGuard>} />
+      <Route path="/transferencias" element={<AuthGuard><ProtectedRoute path="/transferencias"><Transferencias /></ProtectedRoute></AuthGuard>} />
       <Route path="/usuarios" element={<AuthGuard><ProtectedRoute path="/usuarios"><Usuarios /></ProtectedRoute></AuthGuard>} />
       <Route path="/configuracoes" element={<AuthGuard><ProtectedRoute path="/configuracoes"><Configuracoes /></ProtectedRoute></AuthGuard>} />
       <Route path="*" element={<NotFound />} />
