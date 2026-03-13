@@ -53,7 +53,7 @@ export const useApp = () => {
 };
 
 const vendaAllowed = new Set(["/estoque", "/sangrias", "/evidencias", "/vendas-diarias"]);
-const depositoAllowed = new Set(["/estoque", "/sangrias", "/evidencias"]);
+const depositoAllowed = new Set(["/estoque", "/sangrias", "/evidencias", "/transferencias"]);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
