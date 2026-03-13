@@ -171,8 +171,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const currentRole: UserRole = profile?.cargo || "Operador";
-  const isOperator = currentRole === "Operador" || currentRole === "Vendedor";
+  const currentRole: UserRole = (profile?.cargo as UserRole) || "Operador de Venda";
+  const isOperator = currentRole === "Operador de Venda" || currentRole === "Operador de Depósito";
 
   const updateSettings = (partial: Partial<AppSettings>) => {
     setSettings((prev) => ({ ...prev, ...partial }));
