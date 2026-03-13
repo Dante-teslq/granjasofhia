@@ -43,7 +43,7 @@ const UsuariosPage = () => {
   const [pdvMap, setPdvMap] = useState<Record<string, string>>({});
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [formUser, setFormUser] = useState({ nome: "", email: "", telefone: "", cargo: "Operador", pdv_id: "" });
+  const [formUser, setFormUser] = useState({ nome: "", email: "", telefone: "", cargo: "Operador de Venda", pdv_id: "" });
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const isAdmin = currentRole === "Administrador" || currentRole === "Admin";
