@@ -290,7 +290,7 @@ const UsuariosPage = () => {
                     <SelectItem value="Operador de Depósito">Operador de Depósito</SelectItem>
                     <SelectItem value="Supervisor">Supervisor</SelectItem>
                     <SelectItem value="Admin">Administrador</SelectItem>
-                    <SelectItem value="Auditor">Auditor</SelectItem>
+                    
                   </SelectContent>
                 </Select>
               </div>
