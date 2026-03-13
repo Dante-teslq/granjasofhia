@@ -102,10 +102,10 @@ const VendasDiariasPage = () => {
   };
 
   const stats = [
-    { label: "Total Hoje", value: `R$ ${totalHoje.toFixed(2)}`, icon: DollarSign },
-    { label: "Qtd Hoje", value: qtdHoje.toString(), icon: ShoppingCart },
-    { label: "Total Período", value: `R$ ${totalPeriodo.toFixed(2)}`, icon: TrendingUp },
-    { label: "Qtd Período", value: qtdPeriodo.toString(), icon: Package },
+    { label: "Cartelas Hoje", value: `${qtdHoje} cartelas`, icon: ShoppingCart },
+    { label: "Cartelas no Período", value: `${qtdPeriodo} cartelas`, icon: Package },
+    { label: "Produtos Hoje", value: `${new Set(records.filter(r => r.data === format(new Date(), "yyyy-MM-dd")).map(r => r.produto)).size} tipos`, icon: TrendingUp },
+    { label: "Registros no Período", value: records.length.toString(), icon: Calendar },
   ];
 
   return (
